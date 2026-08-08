@@ -4,10 +4,10 @@ import {
   withSpendingPolicy,
   PolicyViolationError,
   ReplayDetectedError,
-} from '@x402-guard/middleware';
-import { parseResourceUrl } from '@x402-guard/core';
-export type { AgentPolicyConfig, X402PaymentContext } from '@x402-guard/core';
-export type { PaymentReceipt } from '@x402-guard/middleware';
+} from '@railguard/x402';
+import { parseResourceUrl } from '@railguard/x402-core';
+export type { AgentPolicyConfig, X402PaymentContext } from '@railguard/x402-core';
+export type { PaymentReceipt } from '@railguard/x402';
 
 export {
   X402Guard,

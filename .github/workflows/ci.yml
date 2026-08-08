@@ -43,7 +43,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          path: railguard-new
+          path: railguard-protocol
           submodules: recursive
       - uses: actions/checkout@v4
         with:
@@ -57,20 +57,26 @@ jobs:
         with:
           node-version: '20'
       - name: Install contract dependencies
-        run: cd railguard-new && make contracts-deps
+        run: cd railguard-protocol && make contracts-deps
       - name: Cross-language sessionId + EIP-712 vectors
         run: |
-          cd railguard-new/contracts && forge test --match-path "test/*Vector.t.sol" -vv
+          cd railguard-protocol/contracts && forge test --match-path "test/*Vector.t.sol" -vv
           cd ../signgate && go test ./internal/session ./internal/eip712 ./internal/policy -run "CrossLanguage|PhysicalVectors"
           cd ../../x402-guard && npm ci && npm run build
-          cd ../railguard-new/sdk && npm ci && npm test -- sessionId eip712 receiptHash
+          CORE_PACK=$(npm pack -w @railguard/x402-core --silent)
+          POLICY_PACK=$(npm pack -w @railguard/x402-policy --silent)
+          RECEIPTS_PACK=$(npm pack -w @railguard/x402-receipts --silent)
+          MW_PACK=$(npm pack -w @railguard/x402 --silent)
+          cd ../railguard-protocol/sdk
+          npm install "../../x402-guard/${CORE_PACK}" "../../x402-guard/${POLICY_PACK}" "../../x402-guard/${RECEIPTS_PACK}" "../../x402-guard/${MW_PACK}"
+          npm test -- sessionId eip712 receiptHash
 
   typescript-tests:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
-          path: railguard-new
+          path: railguard-protocol
       - uses: actions/checkout@v4
         with:
           repository: prasanthkuna/x402-guard
@@ -81,14 +87,22 @@ jobs:
       - name: Build x402-guard
         run: cd x402-guard && npm ci && npm run build
       - name: SDK build and test
-        run: cd railguard-new/sdk && npm ci && npm run build && npm test
+        run: |
+          cd x402-guard
+          CORE_PACK=$(npm pack -w @railguard/x402-core --silent)
+          POLICY_PACK=$(npm pack -w @railguard/x402-policy --silent)
+          RECEIPTS_PACK=$(npm pack -w @railguard/x402-receipts --silent)
+          MW_PACK=$(npm pack -w @railguard/x402 --silent)
+          cd ../railguard-protocol/sdk
+          npm install "../../x402-guard/${CORE_PACK}" "../../x402-guard/${POLICY_PACK}" "../../x402-guard/${RECEIPTS_PACK}" "../../x402-guard/${MW_PACK}"
+          npm test && npm run build
 
   failure-lab:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
-          path: railguard-new
+          path: railguard-protocol
       - uses: actions/checkout@v4
         with:
           repository: prasanthkuna/x402-guard
@@ -126,4 +140,4 @@ jobs:
           ln -sfn "$ROOT/x402-guard" "$ROOT/coinbase/x402-guard"
           cd "$ROOT/coinbase" && bun install
       - name: Run failure lab (unit profiles)
-        run: cd railguard-new && bash scripts/failure-lab.sh
+        run: cd railguard-protocol && bash scripts/failure-lab.sh

@@ -1,15 +1,55 @@
 {
   "name": "@railguard/sdk",
   "version": "0.1.0",
-  "private": true,
+  "description": "Railguard TypeScript SDK — EIP-712 intents, session helpers, and x402 guard adapters",
+  "license": "Apache-2.0",
+  "author": "Prashanth Kuna",
   "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/prasanthkuna/railguard-protocol.git",
+    "directory": "sdk"
+  },
+  "homepage": "https://github.com/prasanthkuna/railguard-protocol#readme",
+  "bugs": {
+    "url": "https://github.com/prasanthkuna/railguard-protocol/issues"
+  },
+  "keywords": [
+    "railguard",
+    "x402",
+    "eip712",
+    "agent",
+    "payments",
+    "sdk"
+  ],
   "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "prepublishOnly": "npm run build",
     "test": "vitest run",
-    "build": "tsc -p tsconfig.json"
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "pack:check": "npm run build && npm pack --dry-run"
   },
   "dependencies": {
-    "@x402-guard/core": "file:../../x402-guard/packages/core",
-    "@x402-guard/middleware": "file:../../x402-guard/packages/middleware",
+    "@railguard/x402": "file:../../x402-guard/railguard-x402-0.1.0.tgz",
+    "@railguard/x402-core": "file:../../x402-guard/railguard-x402-core-0.1.0.tgz",
+    "@railguard/x402-policy": "file:../../x402-guard/railguard-x402-policy-0.1.0.tgz",
+    "@railguard/x402-receipts": "file:../../x402-guard/railguard-x402-receipts-0.1.0.tgz",
     "viem": "^2.21.54"
   },
   "devDependencies": {

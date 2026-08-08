@@ -1,8 +1,8 @@
 # Railguard
 
-[![ci](https://github.com/prasanthkuna/railguard-new/actions/workflows/ci.yml/badge.svg)](https://github.com/prasanthkuna/railguard-new/actions/workflows/ci.yml)
-[![release](https://img.shields.io/github/v/tag/prasanthkuna/railguard-new/v0.1-reference?label=v0.1-reference)](https://github.com/prasanthkuna/railguard-new/releases/tag/v0.1-reference)
-[![license](https://img.shields.io/github/license/prasanthkuna/railguard-new)](./LICENSE)
+[![ci](https://github.com/prasanthkuna/railguard-protocol/actions/workflows/ci.yml/badge.svg)](https://github.com/prasanthkuna/railguard-protocol/actions/workflows/ci.yml)
+[![release](https://img.shields.io/github/v/tag/prasanthkuna/railguard-protocol/v0.1-reference?label=v0.1-reference)](https://github.com/prasanthkuna/railguard-protocol/releases/tag/v0.1-reference)
+[![license](https://img.shields.io/github/license/prasanthkuna/railguard-protocol)](./LICENSE)
 [![E2E](https://img.shields.io/badge/E2E-docker%20happy--path-green)](./scripts/e2e-happy-path.ps1)
 [![status](https://img.shields.io/badge/status-reference%20implementation-lightgrey)](./docs/RELEASE_v0.1-reference.md)
 
@@ -20,7 +20,7 @@ Policy-enforced execution safety layer for AI-agent stablecoin payments.
 
 | Repo | Role |
 |------|------|
-| **[railguard-new](https://github.com/prasanthkuna/railguard-new)** (this repo) | SignGate, Solidity hook/adapter, SDK, watcher |
+| **[railguard-protocol](https://github.com/prasanthkuna/railguard-protocol)** (this repo) | SignGate, Solidity hook/adapter, SDK, watcher |
 | **[x402-guard](https://github.com/prasanthkuna/x402-guard)** | Pre-sign agent payment policy (caps, replay, rolling budgets) |
 | **[railguard-cdp](https://github.com/prasanthkuna/railguard-cdp)** | Invoice product, CDP execution, approvals, reconciler |
 

@@ -1,10 +1,10 @@
 # Railguard Portfolio — Start Here
 
 > **Send recruiters and reviewers only this link:**  
-> `https://github.com/prasanthkuna/railguard-new/blob/master/docs/PORTFOLIO.md`
+> `https://github.com/prasanthkuna/railguard-protocol/blob/master/docs/PORTFOLIO.md`
 
 [![v0.1-reference](https://img.shields.io/badge/release-v0.1--reference-blue)](./RELEASE_v0.1-reference.md)
-[![ci](https://github.com/prasanthkuna/railguard-new/actions/workflows/ci.yml/badge.svg)](https://github.com/prasanthkuna/railguard-new/actions/workflows/ci.yml)
+[![ci](https://github.com/prasanthkuna/railguard-protocol/actions/workflows/ci.yml/badge.svg)](https://github.com/prasanthkuna/railguard-protocol/actions/workflows/ci.yml)
 [![E2E proof](https://img.shields.io/badge/E2E-docker%20happy--path-green)](../../scripts/e2e-happy-path.ps1)
 [![status](https://img.shields.io/badge/status-v0.1%20reference%20impl-lightgrey)](./RELEASE_v0.1-reference.md)
 
@@ -21,7 +21,7 @@
 ```text
 Agent Payment Failure Lab   → tests the system (APF-001..006)
 x402-guard                  → pre-payment authorization and budget reservation
-railguard-new               → on-chain session enforcement (SignGate + hook)
+railguard-protocol          → on-chain session enforcement (SignGate + hook)
 railguard-cdp               → enterprise execution and reconciliation
 ```
 
@@ -29,7 +29,7 @@ railguard-cdp               → enterprise execution and reconciliation
 |-------|------|------|
 | **Test** | [agent-payment-failure-lab](https://github.com/prasanthkuna/agent-payment-failure-lab) | Adversarial failure profiles |
 | **Policy** | [x402-guard](https://github.com/prasanthkuna/x402-guard) | Pre-sign `authorizePayment` |
-| **On-chain** | [railguard-new](https://github.com/prasanthkuna/railguard-new) | SignGate + ERC-7579 hook |
+| **On-chain** | [railguard-protocol](https://github.com/prasanthkuna/railguard-protocol) | SignGate + ERC-7579 hook |
 | **Execution** | [railguard-cdp](https://github.com/prasanthkuna/railguard-cdp) | CDP wallet + reconciliation |
 
 ---
@@ -40,7 +40,7 @@ railguard-cdp               → enterprise execution and reconciliation
 |------|---------|
 | **2 min** | Read [What I built](#what-i-built) + [Failure modes](#what-failed-in-audit--what-i-fixed) below |
 | **5 min** | `cd x402-guard && bun test packages/policy/src/authorize.test.ts` |
-| **10 min** | `cd railguard-new/contracts && forge test --match-contract PrdDemo -vv` |
+| **10 min** | `cd railguard-protocol/contracts && forge test --match-contract PrdDemo -vv` |
 | **15 min** | Docker E2E: `docker compose up -d --build` → `apply-db-migrations.ps1` → `e2e-happy-path.ps1` |
 
 ---
@@ -102,7 +102,7 @@ cd x402-guard
 bun test packages/policy/src/authorize.test.ts
 
 # On-chain attacks blocked (~3 min)
-cd ..\railguard-new\contracts
+cd ..\railguard-protocol\contracts
 forge test --match-contract PrdDemo -vv
 ```
 
@@ -115,7 +115,7 @@ Full loop (~15 min): see [RELEASE_v0.1-reference.md](./RELEASE_v0.1-reference.md
 | # | Boundary | Repo |
 |---|----------|------|
 | 1 | Pre-sign x402 policy | [x402-guard](https://github.com/prasanthkuna/x402-guard) |
-| 2 | Session + on-chain ceiling | [railguard-new](https://github.com/prasanthkuna/railguard-new) |
+| 2 | Session + on-chain ceiling | [railguard-protocol](https://github.com/prasanthkuna/railguard-protocol) |
 | 3 | Invoice / CDP product | [railguard-cdp](https://github.com/prasanthkuna/railguard-cdp) |
 
 **CDP vs hook:** CDP proves invoice workflow + broadcast reconciliation. Hook proves smart-account caps. v0.1 shares policy/audit primitives; full CDP→smart-account routing is v0.2+.
@@ -154,6 +154,6 @@ Tag **`v0.1-reference`** on all three repos. Notes: [RELEASE_v0.1-reference.md](
 
 | Repo | CI |
 |------|-----|
-| railguard-new | [![ci](https://github.com/prasanthkuna/railguard-new/actions/workflows/ci.yml/badge.svg)](https://github.com/prasanthkuna/railguard-new/actions/workflows/ci.yml) |
+| railguard-protocol | [![ci](https://github.com/prasanthkuna/railguard-protocol/actions/workflows/ci.yml/badge.svg)](https://github.com/prasanthkuna/railguard-protocol/actions/workflows/ci.yml) |
 | x402-guard | [![CI](https://github.com/prasanthkuna/x402-guard/actions/workflows/ci.yml/badge.svg)](https://github.com/prasanthkuna/x402-guard/actions/workflows/ci.yml) |
 | railguard-cdp | PR checks on `main` |
