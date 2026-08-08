@@ -1,6 +1,6 @@
 # v4 execution plan (code-grounded)
 
-This document is the **execution order** for `v4plan.md`. It reflects what the code contains.
+This document is the **execution order** for `v4plan.md`. It reflects what the code contains and the current release state.
 
 `v4plan.md` remains the architecture constitution.
 
@@ -23,7 +23,7 @@ This document is the **execution order** for `v4plan.md`. It reflects what the c
 | **P2** | `RailguardVaultExecutor` + stub vault driver | **Done** |
 | **P2** | KMS SignGate config stub (`KMS_SIGNER_*`) | **Done** |
 | **P2** | Hierarchical budget scope columns on guard auths | **Done** (schema) |
-| **P3** | Live vault CDP integration, full KMS, npm publish, repo rename | **Backlog** |
+| **P3** | Live vault CDP integration, full KMS, evidence package, full hierarchical budgets, observability | **Backlog** |
 
 ---
 
@@ -40,7 +40,7 @@ Live CDP calls pass `idempotencyKey` to `account.transfer()`. Recovery reuses th
 
 ---
 
-## P0 — SignGate post-submit freeze (`railguard-new/`)
+## P0 — SignGate post-submit freeze (`railguard-protocol/`)
 
 | Component | Location |
 |-----------|----------|
@@ -111,7 +111,7 @@ Set `BUDGET_AUTHORITY=postgres` to use PostgreSQL as live spend authority:
 
 | Component | Location |
 |-----------|----------|
-| On-chain vault reference | `railguard-new/contracts/src/RailguardVaultExecutor.sol` |
+| On-chain vault reference | `railguard-protocol/contracts/src/RailguardVaultExecutor.sol` |
 | Stub driver | `packages/kernel/src/vaultDriver.ts` |
 | KMS config | `signgate/internal/config/config.go` — `KMS_SIGNER_ENABLED`, `KMS_SIGNER_KEY_ID` |
 
@@ -137,7 +137,7 @@ Production KMS signing and live vault CDP calls are P3.
 | **2 — Wire domain** | Purchase + quote before intent; fulfilment after confirmed; outbox cron | **Done** — `api.ts`, `reconcile.ts`, `outboxPoller.ts` |
 | **3 — Converge duplicates** | `DbGuardStateStore` wraps shared `PostgresGuardStateStore` | **Done** — `encoreGuardSqlAdapter.ts` |
 
-**You still need to run migrations locally:**
+For a fresh local dev database, run Encore so migrations are applied:
 
 ```powershell
 cd c:\Users\PrashanthKuna\coinbase\apps\api
@@ -167,26 +167,46 @@ Full Encore E2E with lost CDP response in CI remains optional (requires `ENCORE_
 
 ---
 
-## Step 4 — open source (Phase A + B complete)
+## Step 4 — open source (Done)
 
 | Item | Status |
 |------|--------|
-| `@kuna5678/x402-core`, `@kuna5678/x402-policy`, `@kuna5678/x402-receipts`, `@kuna5678/x402` packaged | Done — [x402-guard](https://github.com/prasanthkuna/x402-guard) |
-| `@kuna5678/railguard-sdk` manifest + release CI | Done — tag `sdk-v0.1.0` publishes via `.github/workflows/release-sdk.yml` |
-| npm scope `@kuna5678/*` (not `@x402-guard/*`) | Locked — create org + `NPM_TOKEN` before first publish |
-| Repo rename `railguard-new` → `railguard-protocol` | Docs/CI updated; run `gh repo rename railguard-protocol` on GitHub when ready |
+| `@kuna5678/x402-core`, `@kuna5678/x402-policy`, `@kuna5678/x402-receipts`, `@kuna5678/x402` | **Done** — v0.1.0 packages are published from [x402-guard](https://github.com/prasanthkuna/x402-guard) |
+| `@kuna5678/railguard-sdk` | **Done** — v0.1.0 package is published; release CI lives at `.github/workflows/release-sdk.yml` |
+| npm scope | **Done** — user scope `@kuna5678/*`; no `@railguard` npm org required |
+| Repo rename `railguard-new` → `railguard-protocol` | **Done** — GitHub repo, docs and CI use `railguard-protocol` |
+| SDK lockfile | **Done** — resolves released `@kuna5678/*` packages from the npm registry, not stale local tarballs |
 
-**Publish (after `@railguard` org + `NPM_TOKEN`):**
+Install:
 
 ```powershell
-# x402-guard
-git tag v0.1.0 && git push origin v0.1.0
+npm i @kuna5678/x402 @kuna5678/railguard-sdk
+```
 
-# railguard-protocol
-git tag sdk-v0.1.0 && git push origin sdk-v0.1.0
+Release reproducibility status:
+
+- `x402-guard` tag `v0.1.0` is already pushed.
+- `railguard-protocol` tag `sdk-v0.1.0` is still pending. Push it to make the SDK release workflow reproduce the already-published v0.1.0 release.
+
+```powershell
+cd c:\Users\PrashanthKuna\railguard-protocol
+git tag sdk-v0.1.0
+git push origin sdk-v0.1.0
 ```
 
 See [x402-guard/docs/PUBLISH.md](https://github.com/prasanthkuna/x402-guard/blob/main/docs/PUBLISH.md).
+
+---
+
+## Post-plan delivery completed
+
+These landed after the original v4 execution plan and are part of the current shipped state:
+
+- PreBroadcast showcase seed with realistic invoice scenarios and approve/reject/pay demo flow.
+- Staging WorkOS hardening: preserve operator roles, stop failed JWTs falling through to header auth, disable header-auth fallback when WorkOS is configured, and proactively refresh near-expiry tokens.
+- Demo payment execution wiring and distinct showcase invoice numbers for repeatable staging demonstrations.
+- GitHub rename to `railguard-protocol` and corresponding docs/CI updates.
+- npm publishing under `@kuna5678/*` and SDK registry lockfile cleanup.
 
 ---
 
@@ -194,11 +214,24 @@ See [x402-guard/docs/PUBLISH.md](https://github.com/prasanthkuna/x402-guard/blob
 
 - Live `CDP_VAULT_CALL` through CDP smart account
 - KMS-backed SignGate signer implementation
-- npm publish `@railguard/evidence` (future package)
+- `@kuna5678/railguard-evidence` package (future)
 - Full hierarchical budget enforcement across org/team/agent/merchant
 - Observability trace propagation (v4 §18)
 
 Keep v4 §29 do-not-build list.
+
+---
+
+## Recommended next lane
+
+Core protocol and open-source packaging are shipped. The highest-value next work is **grant/evidence packaging**, not more architecture:
+
+1. Run the Encore/PreBroadcast staging demo end to end.
+2. Capture §22 counters, audit/export evidence, and the recovery proof for a reviewer-facing grant packet.
+3. Update `docs/PORTFOLIO.md` with the live npm packages and PreBroadcast staging entry point.
+4. Push `sdk-v0.1.0` for reproducible SDK release CI.
+
+Product hardening can follow when it supports a real pilot: real outbox delivery (webhook/SQS), staging `BUDGET_AUTHORITY=postgres`, and the remaining WorkOS redirect URI cleanup.
 
 ---
 
