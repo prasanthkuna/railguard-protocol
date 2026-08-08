@@ -29,15 +29,15 @@ jobs:
       - name: Install SDK from packed deps
         run: |
           cd x402-guard
-          CORE_PACK=$(npm pack -w @railguard/x402-core --silent)
-          POLICY_PACK=$(npm pack -w @railguard/x402-policy --silent)
-          RECEIPTS_PACK=$(npm pack -w @railguard/x402-receipts --silent)
-          MW_PACK=$(npm pack -w @railguard/x402 --silent)
+          CORE_PACK=$(npm pack -w @kuna5678/x402-core --silent)
+          POLICY_PACK=$(npm pack -w @kuna5678/x402-policy --silent)
+          RECEIPTS_PACK=$(npm pack -w @kuna5678/x402-receipts --silent)
+          MW_PACK=$(npm pack -w @kuna5678/x402 --silent)
           cd ../railguard-protocol/sdk
           npm install "../../x402-guard/${CORE_PACK}" "../../x402-guard/${POLICY_PACK}" "../../x402-guard/${RECEIPTS_PACK}" "../../x402-guard/${MW_PACK}"
       - name: Test and build
         run: cd railguard-protocol/sdk && npm test && npm run build
-      - name: Publish @railguard/sdk
+      - name: Publish @kuna5678/railguard-sdk
         working-directory: railguard-protocol/sdk
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

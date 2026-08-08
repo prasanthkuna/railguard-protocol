@@ -1,5 +1,5 @@
 {
-  "name": "@railguard/sdk",
+  "name": "@kuna5678/railguard-sdk",
   "version": "0.1.0",
   "description": "Railguard TypeScript SDK — EIP-712 intents, session helpers, and x402 guard adapters",
   "license": "Apache-2.0",
@@ -46,10 +46,8 @@
     "pack:check": "npm run build && npm pack --dry-run"
   },
   "dependencies": {
-    "@railguard/x402": "file:../../x402-guard/railguard-x402-0.1.0.tgz",
-    "@railguard/x402-core": "file:../../x402-guard/railguard-x402-core-0.1.0.tgz",
-    "@railguard/x402-policy": "file:../../x402-guard/railguard-x402-policy-0.1.0.tgz",
-    "@railguard/x402-receipts": "file:../../x402-guard/railguard-x402-receipts-0.1.0.tgz",
+    "@kuna5678/x402": "0.1.0",
+    "@kuna5678/x402-core": "0.1.0",
     "viem": "^2.21.54"
   },
   "devDependencies": {

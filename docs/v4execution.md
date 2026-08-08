@@ -14,7 +14,7 @@ This document is the **execution order** for `v4plan.md`. It reflects what the c
 | **P0** | SignGate Redis freeze on submit + watcher Redis commit | **Done** |
 | **P1** | Extract `@railguard/kernel` + execution-driver protocol | **Done** |
 | **P1** | Promote `PostgresGuardStateStore` to `@x402-guard/policy` | **Done** |
-| **P1** | `@railguard/x402` + `@railguard/x402-policy` alias packages | **Done** |
+| **P1** | `@kuna5678/x402` + `@kuna5678/x402-policy` alias packages | **Done** |
 | **P2** | Purchases / quotes / fulfilments / outbox (migration 010) | **Done** |
 | **P2** | Wire domain into CDP API + outbox cron | **Done** (Step 2) |
 | **P2** | Converge `DbGuardStateStore` → shared `PostgresGuardStateStore` | **Done** (Step 3) |
@@ -71,8 +71,8 @@ Extracted pure payment logic (re-exported from `apps/api/*`):
 | `PostgresGuardStateStore` | `packages/policy/src/postgresStore.ts` |
 | Encore adapter | `coinbase/apps/api/encoreGuardSqlAdapter.ts` → `x402GuardDbStore.ts` |
 | Shared store tests | `packages/policy/src/postgresStore.test.ts` |
-| Alias package | `packages/railguard-x402-policy` → `@railguard/x402-policy` |
-| Middleware alias | `packages/railguard-x402` → `@railguard/x402` |
+| Alias package | `packages/railguard-x402-policy` → `@kuna5678/x402-policy` |
+| Middleware alias | `packages/railguard-x402` → `@kuna5678/x402` |
 
 ---
 
@@ -171,9 +171,9 @@ Full Encore E2E with lost CDP response in CI remains optional (requires `ENCORE_
 
 | Item | Status |
 |------|--------|
-| `@railguard/x402-core`, `@railguard/x402-policy`, `@railguard/x402-receipts`, `@railguard/x402` packaged | Done — [x402-guard](https://github.com/prasanthkuna/x402-guard) |
-| `@railguard/sdk` manifest + release CI | Done — tag `sdk-v0.1.0` publishes via `.github/workflows/release-sdk.yml` |
-| npm scope `@railguard/*` (not `@x402-guard/*`) | Locked — create org + `NPM_TOKEN` before first publish |
+| `@kuna5678/x402-core`, `@kuna5678/x402-policy`, `@kuna5678/x402-receipts`, `@kuna5678/x402` packaged | Done — [x402-guard](https://github.com/prasanthkuna/x402-guard) |
+| `@kuna5678/railguard-sdk` manifest + release CI | Done — tag `sdk-v0.1.0` publishes via `.github/workflows/release-sdk.yml` |
+| npm scope `@kuna5678/*` (not `@x402-guard/*`) | Locked — create org + `NPM_TOKEN` before first publish |
 | Repo rename `railguard-new` → `railguard-protocol` | Docs/CI updated; run `gh repo rename railguard-protocol` on GitHub when ready |
 
 **Publish (after `@railguard` org + `NPM_TOKEN`):**

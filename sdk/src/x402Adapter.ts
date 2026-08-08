@@ -4,10 +4,10 @@ import {
   withSpendingPolicy,
   PolicyViolationError,
   ReplayDetectedError,
-} from '@railguard/x402';
-import { parseResourceUrl } from '@railguard/x402-core';
-export type { AgentPolicyConfig, X402PaymentContext } from '@railguard/x402-core';
-export type { PaymentReceipt } from '@railguard/x402';
+} from '@kuna5678/x402';
+import { parseResourceUrl } from '@kuna5678/x402-core';
+export type { AgentPolicyConfig, X402PaymentContext } from '@kuna5678/x402-core';
+export type { PaymentReceipt } from '@kuna5678/x402';
 
 export {
   X402Guard,

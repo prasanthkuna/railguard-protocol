@@ -24,7 +24,7 @@ Do not claim they provide equal protection.
 
 ### `railguard-new` → `railguard-protocol`
 
-GitHub repo **`prasanthkuna/railguard`** stays the PreBroadcast product (CDP). Protocol repo renames to **`railguard-protocol`**; npm packages publish under **`@railguard/*`**.
+GitHub repo **`prasanthkuna/railguard`** stays the PreBroadcast product (CDP). Protocol repo renames to **`railguard-protocol`**; npm packages publish under **`@kuna5678/*`**.
 
 Make this the canonical platform containing:
 
@@ -46,9 +46,9 @@ Rename the old archived `railguard` repository to `railguard-legacy` first.
 It becomes the standalone developer-distribution layer:
 
 ```text
-@railguard/x402
-@railguard/x402-policy
-@railguard/x402-receipts
+@kuna5678/x402
+@kuna5678/x402-policy
+@kuna5678/x402-receipts
 ```
 
 Support:
@@ -415,7 +415,7 @@ Define compatibility rules before publishing packages.
 
 ---
 
-## 16. Convert `x402-guard` into `@railguard/x402`
+## 16. Convert `x402-guard` into `@kuna5678/x402`
 
 Wrap the official x402 packages rather than reproducing the protocol.
 
@@ -466,7 +466,7 @@ Prove:
 Propagate one trace context across:
 
 ```text
-@railguard/x402
+@kuna5678/x402
 → Railguard API
 → policy evaluation
 → authorization reservation
@@ -702,8 +702,8 @@ Only then consider archiving or renaming the repository.
 Publish:
 
 ```text
-@railguard/sdk
-@railguard/x402
+@kuna5678/railguard-sdk
+@kuna5678/x402
 @railguard/evidence
 ```
 
