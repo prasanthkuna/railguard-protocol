@@ -12,6 +12,7 @@ import (
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/railguard/signgate/internal/config"
+	"github.com/railguard/signgate/internal/reservation"
 	"github.com/railguard/signgate/internal/store"
 	"github.com/rs/zerolog"
 )
@@ -20,18 +21,20 @@ var executionAllowedSig = crypto.Keccak256Hash([]byte("ExecutionAllowed(address,
 
 // Reconciler ingests on-chain ExecutionAllowed events for mandatory v1 reconciliation.
 type Reconciler struct {
-	log       zerolog.Logger
-	store     store.Repository
-	cfg       config.Config
-	client    *ethclient.Client
-	lastBlock uint64
+	log         zerolog.Logger
+	store       store.Repository
+	reservation reservation.Authority
+	cfg         config.Config
+	client      *ethclient.Client
+	lastBlock   uint64
 }
 
-func New(log zerolog.Logger, st store.Repository, cfg config.Config) *Reconciler {
+func New(log zerolog.Logger, st store.Repository, rs reservation.Authority, cfg config.Config) *Reconciler {
 	return &Reconciler{
-		log:   log,
-		store: st,
-		cfg:   cfg,
+		log:         log,
+		store:       st,
+		reservation: rs,
+		cfg:         cfg,
 	}
 }
 
@@ -185,15 +188,24 @@ func (r *Reconciler) ingestLog(ctx context.Context, lg types.Log) error {
 		totalSpendAfter = new(big.Int).SetBytes(lg.Data[32:64]).String()
 	}
 
-	return r.store.RecordChainExecution(ctx, store.ChainExecution{
-		Account:          strings.ToLower(account.Hex()),
-		SessionID:        sessionID.Hex(),
-		NonceKey:         nonceKey,
-		FrameSpend:       frameSpend,
-		TotalSpendAfter:  totalSpendAfter,
-		ExecutionDigest:  strings.ToLower(executionDigest),
-		BlockNumber:      int64(lg.BlockNumber),
-		TxHash:           strings.ToLower(lg.TxHash.Hex()),
-		LogIndex:         int(lg.Index),
+	reservationID, committed, err := r.store.RecordChainExecution(ctx, store.ChainExecution{
+		Account:         strings.ToLower(account.Hex()),
+		SessionID:       sessionID.Hex(),
+		NonceKey:        nonceKey,
+		FrameSpend:      frameSpend,
+		TotalSpendAfter: totalSpendAfter,
+		ExecutionDigest: strings.ToLower(executionDigest),
+		BlockNumber:     int64(lg.BlockNumber),
+		TxHash:          strings.ToLower(lg.TxHash.Hex()),
+		LogIndex:        int(lg.Index),
 	})
+	if err != nil {
+		return err
+	}
+	if committed && reservationID != "" && r.reservation != nil {
+		if err := r.reservation.CommitReservation(ctx, reservationID); err != nil {
+			r.log.Warn().Err(err).Str("reservationId", reservationID).Msg("redis reservation commit failed")
+		}
+	}
+	return nil
 }

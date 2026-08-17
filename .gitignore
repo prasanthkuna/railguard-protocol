@@ -10,28 +10,31 @@ signgate/bin/
 # Node
 sdk/node_modules/
 sdk/dist/
+assets/video-launch/node_modules/
+assets/video-launch/dist/
 
 # Env
 .env
 .env.local
 !.env.example
 
-# IDE
+# IDE / OS
 .idea/
 .vscode/
-
-# OS
 Thumbs.db
 .DS_Store
 __pycache__/
+*.code-workspace
 
-# Generated runtime evidence at evidence root (from scripts/testnet-evidence.ps1)
+# Personal / local artifacts — never commit
+*.pdf
+Prasanth_*
+
+# Generated runtime evidence at evidence root
 evidence/*.json
 evidence/testnet-manifest.json
 
-# Public manifests in evidence/*/ are committed intentionally
-
-# X campaign — commit generator + 2 showcase PNGs only
+# X campaign — commit generator + showcase PNGs only
 assets/x-campaign/generator/node_modules/
 assets/x-campaign/generator/slides-out/
 assets/x-campaign/generator/slides.html
@@ -45,7 +48,11 @@ assets/x-campaign/proof-*.png
 assets/x-campaign/proof-*.txt
 assets/x-campaign/generator/test-shot.png
 
-# Private — interview prep, pitches, distribution playbooks (local only)
+# Video launch — keep plan docs; ignore build artifacts
+assets/video-launch/.next/
+assets/video-launch/out/
+
+# Private — interview prep, pitches (local only)
 docs/private/
 notes/
 *.local.md

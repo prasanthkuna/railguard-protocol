@@ -1,0 +1,28 @@
+{
+  "name": "railguard-video-launch",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "studio": "remotion studio src/index.ts",
+    "audio": "python scripts/generate_voiceovers.py",
+    "render:launch": "remotion render src/index.ts Launch30-Wide renders/railguard-launch-30s-16x9.mp4",
+    "render:flagship": "remotion render src/index.ts Flagship-Wide renders/railguard-flagship-3m-16x9.mp4",
+    "render:walkthrough": "remotion render src/index.ts Walkthrough-Wide renders/railguard-walkthrough-5m-16x9.mp4",
+    "render:all": "powershell -ExecutionPolicy Bypass -File scripts/render-all.ps1",
+    "check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@fontsource/inter": "^5.2.6",
+    "@fontsource/jetbrains-mono": "^5.2.6",
+    "@remotion/cli": "4.0.496",
+    "@remotion/media": "4.0.496",
+    "remotion": "4.0.496",
+    "zod": "4.3.6"
+  },
+  "devDependencies": {
+    "@types/react": "^19.1.8",
+    "@types/react-dom": "^19.1.6",
+    "typescript": "^5.8.3"
+  }
+}

@@ -22,6 +22,9 @@ func main() {
 	if err := cfg.Validate(); err != nil {
 		log.Fatal().Err(err).Msg("invalid configuration")
 	}
+	if cfg.KMSSignerEnabled && cfg.KMSSignerKeyID == "" {
+		log.Fatal().Msg("KMS_SIGNER_ENABLED requires KMS_SIGNER_KEY_ID")
+	}
 
 	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer cancel()
@@ -29,11 +32,6 @@ func main() {
 	pe, err := policy.New(cfg.OPAPolicyPath)
 	if err != nil {
 		log.Fatal().Err(err).Msg("load opa policy")
-	}
-
-	rs := reservation.New(cfg.RedisAddr)
-	if err := rs.Ping(ctx); err != nil {
-		log.Warn().Err(err).Msg("redis not reachable; reservation endpoints may fail")
 	}
 
 	var repo store.Repository
@@ -49,10 +47,22 @@ func main() {
 		repo = db
 	}
 
-	srv := api.New(log, cfg, pe, rs, repo)
+	var budget reservation.Authority
+	if cfg.UsePostgresBudgetAuthority() {
+		log.Info().Msg("using postgres budget authority")
+		budget = reservation.NewPostgres(repo)
+	} else {
+		redisBudget := reservation.New(cfg.RedisAddr)
+		if err := redisBudget.Ping(ctx); err != nil {
+			log.Warn().Err(err).Msg("redis not reachable; reservation endpoints may fail")
+		}
+		budget = redisBudget
+	}
+
+	srv := api.New(log, cfg, pe, budget, repo)
 
 	if cfg.WatcherEnabled {
-		w := watcher.New(log, repo, cfg)
+		w := watcher.New(log, repo, budget, cfg)
 		go w.Run(ctx)
 	}
 

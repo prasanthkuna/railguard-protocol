@@ -1,7 +1,7 @@
 # Railguard Portfolio — Start Here
 
-> **Send recruiters and reviewers only this link:**  
-> `https://github.com/prasanthkuna/railguard-protocol/blob/master/docs/PORTFOLIO.md`
+> **v5 (current):** [v5plan.md](./v5plan.md) · [v5execution.md](./v5execution.md) · [WORKSPACE.md](./WORKSPACE.md)  
+> **Send recruiters this link:** `https://github.com/prasanthkuna/railguard-new/blob/master/docs/PORTFOLIO.md`
 
 [![v0.1-reference](https://img.shields.io/badge/release-v0.1--reference-blue)](./RELEASE_v0.1-reference.md)
 [![ci](https://github.com/prasanthkuna/railguard-protocol/actions/workflows/ci.yml/badge.svg)](https://github.com/prasanthkuna/railguard-protocol/actions/workflows/ci.yml)
@@ -20,17 +20,17 @@
 
 ```text
 Agent Payment Failure Lab   → tests the system (APF-001..006)
-x402-guard                  → pre-payment authorization and budget reservation
-railguard-protocol          → on-chain session enforcement (SignGate + hook)
-railguard-cdp               → enterprise execution and reconciliation
+x402-guard                  → x402 ExecutionRail adapter (OSS)
+railguard-new               → optional on-chain Authority Engine + hook
+coinbase/ (Railguard)       → hosted API, console, CDP execution, v5 kernel
 ```
 
 | Layer | Repo | Role |
 |-------|------|------|
 | **Test** | [agent-payment-failure-lab](https://github.com/prasanthkuna/agent-payment-failure-lab) | Adversarial failure profiles |
 | **Policy** | [x402-guard](https://github.com/prasanthkuna/x402-guard) | Pre-sign `authorizePayment` |
-| **On-chain** | [railguard-protocol](https://github.com/prasanthkuna/railguard-protocol) | SignGate + ERC-7579 hook |
-| **Execution** | [railguard-cdp](https://github.com/prasanthkuna/railguard-cdp) | CDP wallet + reconciliation |
+| **On-chain** | [railguard-new](https://github.com/prasanthkuna/railguard-new) | Authority Engine (Go) + ERC-7579 hook |
+| **Control plane** | [railguard-cdp → coinbase](https://github.com/prasanthkuna/railguard-cdp) | Railguard API + CDP + v5 SDK/CLI/MCP |
 
 ---
 

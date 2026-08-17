@@ -77,6 +77,25 @@ func TestReserveLargeIntegerAmounts(t *testing.T) {
 	}
 }
 
+func TestFreezeReservationPreventsExpirySweep(t *testing.T) {
+	svc, mr := newTestService(t)
+	ctx := context.Background()
+	resID, err := svc.Reserve(ctx, "sess_freeze", "idem_freeze", "100", "500", time.Second, time.Hour)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := svc.FreezeReservation(ctx, resID); err != nil {
+		t.Fatal(err)
+	}
+	mr.FastForward(time.Second * 2)
+	if err := svc.SweepExpired(ctx, time.Now()); err != nil {
+		t.Fatal(err)
+	}
+	if got, _ := mr.Get("reserve:sess_freeze"); got != "100" {
+		t.Fatalf("expected frozen reservation to remain reserved, got %s", got)
+	}
+}
+
 func TestReleaseAndCommitReservation(t *testing.T) {
 	svc, mr := newTestService(t)
 	ctx := context.Background()

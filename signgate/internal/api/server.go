@@ -26,13 +26,13 @@ type Server struct {
 	log         zerolog.Logger
 	cfg         config.Config
 	policy      *policy.Engine
-	reservation *reservation.Service
+	reservation reservation.Authority
 	store       store.Repository
 	eip712      eip712.Signer
 	receipt     receipt.Signer
 }
 
-func New(log zerolog.Logger, cfg config.Config, pe *policy.Engine, rs *reservation.Service, st store.Repository) *Server {
+func New(log zerolog.Logger, cfg config.Config, pe *policy.Engine, rs reservation.Authority, st store.Repository) *Server {
 	return &Server{
 		log:         log,
 		cfg:         cfg,
@@ -369,6 +369,10 @@ func (s *Server) userOpSubmitted(w http.ResponseWriter, r *http.Request) {
 	}
 	if err := s.store.SaveUserOp(r.Context(), req.UserOpHash, req.ReservationID, "", "USEROP_SUBMITTED", req.Bundler); err != nil {
 		http.Error(w, "failed to persist userop", http.StatusInternalServerError)
+		return
+	}
+	if err := s.reservation.FreezeReservation(r.Context(), req.ReservationID); err != nil {
+		http.Error(w, "failed to freeze reservation", http.StatusInternalServerError)
 		return
 	}
 	writeJSON(w, http.StatusOK, map[string]string{"status": "USEROP_SUBMITTED"})

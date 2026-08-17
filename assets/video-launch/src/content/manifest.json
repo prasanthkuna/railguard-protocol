@@ -1,0 +1,395 @@
+[
+  {
+    "slug": "launch-30",
+    "label": "Launch film · 30 seconds",
+    "title": "Agent payments fail on glue, not validators.",
+    "scenes": [
+      {
+        "id": "hook",
+        "kind": "hook",
+        "seconds": 5,
+        "kicker": "THE DANGEROUS MOMENT",
+        "title": "The payment succeeded.",
+        "body": "The application lost the response.",
+        "accent": "green",
+        "voice": "Payment succeeded. The app lost the response."
+      },
+      {
+        "id": "false-failure",
+        "kind": "failure",
+        "seconds": 5,
+        "kicker": "FALSE CERTAINTY",
+        "title": "Calling it failed is a lie.",
+        "body": "After broadcast, the safe state is unknown.",
+        "accent": "red",
+        "voice": "After broadcast: not failed. Unknown."
+      },
+      {
+        "id": "double-pay",
+        "kind": "comparison",
+        "seconds": 5,
+        "kicker": "THE CONSEQUENCE",
+        "title": "Release the budget too early…",
+        "body": "…and the agent can authorize a second payment.",
+        "accent": "amber",
+        "voice": "Release budget early, and the agent can pay twice."
+      },
+      {
+        "id": "invariant",
+        "kind": "pipeline",
+        "seconds": 6,
+        "kicker": "THE RAILGUARD INVARIANT",
+        "title": "Truth must survive the full lifecycle.",
+        "body": "Intent → Policy → Session → Signature → Hook → Receipt → Reconcile",
+        "accent": "blue",
+        "voice": "Railguard binds every payment boundary."
+      },
+      {
+        "id": "proof",
+        "kind": "proof",
+        "seconds": 5,
+        "kicker": "REPRODUCIBLE PROOF",
+        "title": "Adversarial tests. Testnet evidence.",
+        "body": "Four failure modes fixed across three enforcement boundaries.",
+        "accent": "cyan",
+        "image": "terminal-cdp",
+        "voice": "Adversarial tests. Testnet proof."
+      },
+      {
+        "id": "cta",
+        "kind": "cta",
+        "seconds": 4,
+        "kicker": "RAILGUARD · v0.1 REFERENCE",
+        "title": "Reproduce the failure.",
+        "body": "github.com/prasanthkuna/railguard-new",
+        "accent": "blue",
+        "voice": "Reproduce. Inspect the proof."
+      }
+    ]
+  },
+  {
+    "slug": "flagship-180",
+    "label": "Flagship proof · 3 minutes",
+    "title": "The payment succeeded. The app said it failed.",
+    "scenes": [
+      {
+        "id": "cold-open",
+        "kind": "hook",
+        "seconds": 14,
+        "kicker": "A PAYMENT CORRECTNESS STORY",
+        "title": "The payment succeeded.",
+        "body": "The process crashed before the application learned the truth.",
+        "accent": "green",
+        "voice": "The payment was broadcast successfully. Then the process lost certainty before the application learned the truth. This is where ordinary payment glue becomes dangerous."
+      },
+      {
+        "id": "wrong-state",
+        "kind": "failure",
+        "seconds": 14,
+        "kicker": "BUG 01 · POST-BROADCAST LIE",
+        "title": "The application marked it failed.",
+        "body": "But broadcast already crossed the point of no return.",
+        "accent": "red",
+        "voice": "The naive state machine marks the operation failed. But after broadcast, failed is not a fact. It is an unsafe guess."
+      },
+      {
+        "id": "budget-risk",
+        "kind": "comparison",
+        "seconds": 14,
+        "kicker": "BUDGET TOCTOU",
+        "title": "Read → pay → record",
+        "body": "A crash between those steps can release value twice.",
+        "accent": "amber",
+        "voice": "If budget is read, then payment happens, then the result is recorded, a crash between those steps can release value twice."
+      },
+      {
+        "id": "thesis",
+        "kind": "hook",
+        "seconds": 14,
+        "kicker": "THE THESIS",
+        "title": "Agent payments fail on glue, not validators.",
+        "body": "Correctness is end-to-end state convergence.",
+        "accent": "blue",
+        "voice": "The hard problem is not another validator. It is keeping one truthful state across policy, signing, providers, chain execution, and reconciliation."
+      },
+      {
+        "id": "four-bugs",
+        "kind": "architecture",
+        "seconds": 16,
+        "kicker": "THE AUDIT FOUND FOUR FAILURE MODES",
+        "title": "Mutable allow · Budget TOCTOU · Post-broadcast lie · FIFO reconcile",
+        "bullets": [
+          "Limits outside the intent hash",
+          "Non-atomic budget accounting",
+          "False certainty after broadcast",
+          "Oldest reservation wins"
+        ],
+        "accent": "red",
+        "voice": "The audit exposed four failures: mutable allow limits, budget time-of-check time-of-use, false certainty after broadcast, and FIFO reconciliation."
+      },
+      {
+        "id": "lifecycle",
+        "kind": "pipeline",
+        "seconds": 16,
+        "kicker": "ONE INVARIANT",
+        "title": "Every boundary must preserve identity and truth.",
+        "body": "Intent → Policy → Session → Signature → Hook → Receipt → Reconcile",
+        "accent": "purple",
+        "voice": "Railguard organizes the correction around one invariant. Intent becomes policy, session, signature, execution, receipt, and reconciliation without changing identity."
+      },
+      {
+        "id": "atomic-reserve",
+        "kind": "comparison",
+        "seconds": 16,
+        "kicker": "FIX 01 · ATOMIC AUTHORIZATION",
+        "title": "Reserve before execution.",
+        "body": "Commit only after settlement fact. Release only before broadcast.",
+        "accent": "green",
+        "voice": "Budget authorization becomes atomic. Reserve before execution. Commit after settlement fact. Release only while broadcast has definitely not happened."
+      },
+      {
+        "id": "unknown",
+        "kind": "failure",
+        "seconds": 16,
+        "kicker": "FIX 02 · HONEST UNCERTAINTY",
+        "title": "Unknown is a real safety state.",
+        "body": "It freezes retry until reconciliation establishes truth.",
+        "accent": "amber",
+        "voice": "Unknown is not an error message. It is a safety state. It freezes retry while the reconciler establishes whether value actually moved."
+      },
+      {
+        "id": "digest",
+        "kind": "architecture",
+        "seconds": 16,
+        "kicker": "FIX 03 · EXECUTION IDENTITY",
+        "title": "Reconcile by executionDigest.",
+        "body": "Never let queue order decide which payment a receipt belongs to.",
+        "accent": "cyan",
+        "voice": "Receipts reconcile by execution digest, not by whichever reservation happens to be oldest. Queue order is not payment identity."
+      },
+      {
+        "id": "proof-output",
+        "kind": "proof",
+        "seconds": 16,
+        "kicker": "THE PROOF SURFACE",
+        "title": "Tests, receipts, and public evidence.",
+        "body": "Base Sepolia · Stellar testnet · APF-003/004 · CDP flow",
+        "accent": "blue",
+        "image": "terminal-cdp",
+        "voice": "The repository exposes adversarial tests, receipt schemas, Base Sepolia and Stellar testnet evidence, and end-to-end CDP flow evidence."
+      },
+      {
+        "id": "honest",
+        "kind": "honest",
+        "seconds": 14,
+        "kicker": "HONEST RELEASE BOUNDARY",
+        "title": "What v0.1 does not claim.",
+        "bullets": [
+          "No mainnet funds",
+          "No HSM or MPC cosigners",
+          "No deep reorg rewind",
+          "No production tenancy"
+        ],
+        "accent": "amber",
+        "voice": "This is a reference implementation, not a mainnet product. HSM or MPC signing, deep reorg rewind, and full production operations remain open."
+      },
+      {
+        "id": "close",
+        "kind": "cta",
+        "seconds": 14,
+        "kicker": "RAILGUARD · v0.1 REFERENCE",
+        "title": "Make the failure reproducible.",
+        "body": "Run the demo · inspect the evidence · challenge the state machine",
+        "accent": "blue",
+        "voice": "Do not trust the claim. Reproduce the failure, inspect the evidence, and challenge the state machine."
+      }
+    ]
+  },
+  {
+    "slug": "walkthrough-300",
+    "label": "Reproducible walkthrough · 5 minutes",
+    "title": "Reproduce four AI-agent payment failures.",
+    "scenes": [
+      {
+        "id": "intro",
+        "kind": "hook",
+        "seconds": 20,
+        "kicker": "FIVE-MINUTE REVIEWER PATH",
+        "title": "Reproduce four payment failures.",
+        "body": "Then inspect exactly where the fixes live.",
+        "accent": "blue",
+        "voice": "This walkthrough reproduces four payment correctness failures, shows where each fix lives, and ends with the evidence and honest limitations of the reference release."
+      },
+      {
+        "id": "scope",
+        "kind": "architecture",
+        "seconds": 20,
+        "kicker": "THREE ENFORCEMENT BOUNDARIES",
+        "title": "Pre-sign · Execute · Reconcile",
+        "bullets": [
+          "x402 policy and atomic authorization",
+          "SignGate session and on-chain ceiling",
+          "CDP execution and settlement reconciliation"
+        ],
+        "accent": "purple",
+        "voice": "The system spans three boundaries: pre-sign x402 policy, SignGate and on-chain enforcement, then CDP execution and reconciliation."
+      },
+      {
+        "id": "quick-path",
+        "kind": "steps",
+        "seconds": 20,
+        "kicker": "START HERE",
+        "title": "One reviewer path.",
+        "code": [
+          "make test",
+          "docs/FAILURE_MODES_FIXED.md",
+          "scripts/e2e-happy-path.ps1"
+        ],
+        "accent": "cyan",
+        "voice": "Start with make test, read the fixed failure-mode table, then run the canonical end-to-end script. Those three steps connect claims to executable proof."
+      },
+      {
+        "id": "intent-hash",
+        "kind": "proof",
+        "seconds": 20,
+        "kicker": "BUG 01 · MUTABLE ALLOW",
+        "title": "Limits belong inside the intent hash.",
+        "body": "A signature must bind the payment ceilings it authorizes.",
+        "accent": "red",
+        "image": "terminal-intent",
+        "voice": "First, mutable allow. If limits sit outside the signed intent, policy can approve one thing while execution receives another. Railguard binds ceilings into the intent hash."
+      },
+      {
+        "id": "budget",
+        "kind": "comparison",
+        "seconds": 20,
+        "kicker": "BUG 02 · BUDGET TOCTOU",
+        "title": "Authorization is a state transition.",
+        "body": "Reserve atomically before money can move.",
+        "accent": "amber",
+        "voice": "Second, budget time-of-check time-of-use. A balance read followed by payment is not authorization. The budget must be reserved atomically before execution."
+      },
+      {
+        "id": "onchain",
+        "kind": "steps",
+        "seconds": 20,
+        "kicker": "ON-CHAIN ATTACK DEMO",
+        "title": "One allow. Three blocks.",
+        "code": [
+          "cd contracts",
+          "forge test --match-contract PrdDemo -vv",
+          "powershell -File scripts/demo-onchain.ps1"
+        ],
+        "accent": "green",
+        "voice": "The contract demo shows one allowed path and three blocked attacks. The important point is that the on-chain ceiling remains independent of application optimism."
+      },
+      {
+        "id": "broadcast",
+        "kind": "failure",
+        "seconds": 20,
+        "kicker": "BUG 03 · POST-BROADCAST LIE",
+        "title": "After broadcast: unknown, not failed.",
+        "body": "Unknown freezes retry until settlement truth is recovered.",
+        "accent": "red",
+        "voice": "Third, post-broadcast failure. Once a transaction may have escaped, failed is unsafe. Railguard records unknown and prevents retry until reconciliation recovers truth."
+      },
+      {
+        "id": "state-proof",
+        "kind": "proof",
+        "seconds": 20,
+        "kicker": "STATE-MACHINE PROOF",
+        "title": "Unknown survives retries.",
+        "body": "Submitted and unknown rows remain protected from accidental release.",
+        "accent": "cyan",
+        "image": "terminal-cdp",
+        "voice": "The payment-state tests verify that ambiguous outcomes become unknown, submitted or unknown rows block retry, and repeated execution is idempotent."
+      },
+      {
+        "id": "fifo",
+        "kind": "architecture",
+        "seconds": 20,
+        "kicker": "BUG 04 · FIFO RECONCILIATION",
+        "title": "Oldest is not identity.",
+        "body": "Receipts must select the exact submitted execution.",
+        "accent": "amber",
+        "voice": "Fourth, FIFO reconciliation. The oldest reservation is not necessarily the payment represented by a receipt. Ordering cannot substitute for identity."
+      },
+      {
+        "id": "execution-digest",
+        "kind": "pipeline",
+        "seconds": 20,
+        "kicker": "THE CORRECTION",
+        "title": "executionDigest binds the flow.",
+        "body": "Intent → execution → receipt → reconciliation",
+        "accent": "green",
+        "voice": "An execution digest binds intent, submitted execution, receipt, and reconciliation so the exact payment is updated instead of a convenient queue entry."
+      },
+      {
+        "id": "source-truth",
+        "kind": "architecture",
+        "seconds": 20,
+        "kicker": "SOURCE OF TRUTH",
+        "title": "Application state is not settlement fact.",
+        "bullets": [
+          "Application: intent and reservation",
+          "Provider: submission and response",
+          "Chain: settlement fact",
+          "Reconciler: convergence"
+        ],
+        "accent": "purple",
+        "voice": "Each layer owns different facts. The application owns intent, the provider owns submission information, the chain owns settlement, and the reconciler makes them converge."
+      },
+      {
+        "id": "evidence",
+        "kind": "proof",
+        "seconds": 20,
+        "kicker": "PUBLIC EVIDENCE",
+        "title": "Inspect, do not infer.",
+        "body": "evidence/ · receipts · transaction hashes · test outputs",
+        "accent": "blue",
+        "image": "architecture",
+        "voice": "The evidence directory contains network-specific records, receipts, transaction identifiers, and test outputs. The release asks reviewers to inspect rather than infer."
+      },
+      {
+        "id": "limitations",
+        "kind": "honest",
+        "seconds": 20,
+        "kicker": "KNOWN OPEN WORK",
+        "title": "Reference implementation ≠ production system.",
+        "bullets": [
+          "Postgres boundary fault injection",
+          "Deep reorg rewind",
+          "HSM or MPC cosigners",
+          "Dependency audit cleanup"
+        ],
+        "accent": "amber",
+        "voice": "Known work remains: Postgres boundary fault injection, deep reorg rewind, HSM or MPC cosigners, and dependency audit cleanup. No mainnet funds are in scope."
+      },
+      {
+        "id": "adoption",
+        "kind": "steps",
+        "seconds": 20,
+        "kicker": "THE ADOPTION TEST",
+        "title": "Can another repository keep the check in CI?",
+        "code": [
+          "run one profile",
+          "get one report",
+          "open one issue",
+          "without contacting the author"
+        ],
+        "accent": "cyan",
+        "voice": "The real adoption test is simple. Another repository should run one profile, get one report, and open one useful issue without contacting the author."
+      },
+      {
+        "id": "outro",
+        "kind": "cta",
+        "seconds": 20,
+        "kicker": "RAILGUARD · v0.1 REFERENCE",
+        "title": "Run it. Break it. Improve the profile.",
+        "body": "github.com/prasanthkuna/railguard-new/blob/master/docs/PORTFOLIO.md",
+        "accent": "blue",
+        "voice": "Railguard version zero point one is a reference release. Run it, break it, inspect the proof, and help improve the failure profile."
+      }
+    ]
+  }
+]

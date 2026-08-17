@@ -166,6 +166,32 @@ func (s *Service) Reserve(
 	return reservationID, nil
 }
 
+// FreezeReservation removes a reservation from the pre-submit expiry sweep
+// after a UserOp has been broadcast while keeping metadata for commit/release.
+func (s *Service) FreezeReservation(ctx context.Context, reservationID string) error {
+	meta, err := s.rdb.Get(ctx, reservationMetaKey(reservationID)).Result()
+	if err == redis.Nil {
+		return nil
+	}
+	if err != nil {
+		return err
+	}
+
+	pipe := s.rdb.TxPipeline()
+	members, err := s.rdb.ZRange(ctx, expiryIndexKey(), 0, -1).Result()
+	if err == nil {
+		for _, member := range members {
+			if id, _, _, ok := parseExpiryMember(member); ok && id == reservationID {
+				pipe.ZRem(ctx, expiryIndexKey(), member)
+				break
+			}
+		}
+	}
+	pipe.Set(ctx, reservationMetaKey(reservationID), meta, 7*24*time.Hour)
+	_, err = pipe.Exec(ctx)
+	return err
+}
+
 func (s *Service) CommitReservation(ctx context.Context, reservationID string) error {
 	pipe := s.rdb.TxPipeline()
 	pipe.Del(ctx, reservationMetaKey(reservationID))

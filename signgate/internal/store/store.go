@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"math/big"
 	"time"
 
 	"github.com/google/uuid"
@@ -28,11 +29,12 @@ type Repository interface {
 	BindReservationExecutionDigest(ctx context.Context, reservationID, executionDigest string) error
 	GetWatcherBlockCursor(ctx context.Context) (uint64, error)
 	SetWatcherBlockCursor(ctx context.Context, block uint64, blockHash string) error
-	RecordChainExecution(ctx context.Context, exec ChainExecution) error
+	RecordChainExecution(ctx context.Context, exec ChainExecution) (reservationID string, committed bool, err error)
 	GetChainExecutionBySessionID(ctx context.Context, sessionID string) (ChainExecution, error)
 	GetSessionReserveSnapshot(ctx context.Context, sessionID string) (SessionReserveSnapshot, error)
 	MarkStaleUserOpsReconciliationRequired(ctx context.Context, olderThan time.Time) (int, error)
-	CommitBudgetOnChainExecution(ctx context.Context, sessionID, executionDigest string) error
+	CommitBudgetOnChainExecution(ctx context.Context, sessionID, executionDigest string) (reservationID string, committed bool, err error)
+	ReserveSessionBudget(ctx context.Context, sessionID, idempotencyKey string, amount, maxTotal *big.Int) (reservationID string, err error)
 }
 
 type SessionReserveSnapshot struct {
@@ -363,7 +365,7 @@ func (s *Store) SetWatcherBlockCursor(ctx context.Context, block uint64, blockHa
 	return err
 }
 
-func (s *Store) RecordChainExecution(ctx context.Context, exec ChainExecution) error {
+func (s *Store) RecordChainExecution(ctx context.Context, exec ChainExecution) (string, bool, error) {
 	_, err := s.pool.Exec(ctx, `
 		INSERT INTO chain_executions (
 			id, account, session_id, nonce_key, frame_spend, total_spend_after,
@@ -374,10 +376,10 @@ func (s *Store) RecordChainExecution(ctx context.Context, exec ChainExecution) e
 	`, uuid.New(), exec.Account, exec.SessionID, exec.NonceKey, exec.FrameSpend, exec.TotalSpendAfter,
 		exec.ExecutionDigest, exec.BlockNumber, exec.TxHash, exec.LogIndex)
 	if err != nil {
-		return err
+		return "", false, err
 	}
 	if exec.ExecutionDigest == "" {
-		return nil
+		return "", false, nil
 	}
 	return s.CommitBudgetOnChainExecution(ctx, exec.SessionID, exec.ExecutionDigest)
 }
@@ -452,29 +454,66 @@ func (s *Store) BindReservationExecutionDigest(ctx context.Context, reservationI
 	return nil
 }
 
-func (s *Store) CommitBudgetOnChainExecution(ctx context.Context, sessionID, executionDigest string) error {
+func (s *Store) ReserveSessionBudget(
+	ctx context.Context,
+	sessionID, idempotencyKey string,
+	amount, maxTotal *big.Int,
+) (string, error) {
+	if existing, err := s.GetReservationIDByIdempotency(ctx, idempotencyKey); err == nil && existing != "" {
+		return existing, nil
+	}
+
+	var reservedTotal string
+	err := s.pool.QueryRow(ctx, `
+		SELECT COALESCE(SUM(amount_atomic), 0)::text
+		FROM budget_reservations
+		WHERE lower(session_id) = lower($1)
+		  AND status IN ('BUDGET_RESERVED', 'USEROP_SUBMITTED')
+	`, sessionID).Scan(&reservedTotal)
+	if err != nil {
+		return "", err
+	}
+	current, ok := new(big.Int).SetString(reservedTotal, 10)
+	if !ok {
+		current = big.NewInt(0)
+	}
+	next := new(big.Int).Add(current, amount)
+	if next.Cmp(maxTotal) > 0 {
+		return "", fmt.Errorf("BUDGET_DENIED")
+	}
+	return "res_" + uuid.NewString(), nil
+}
+
+func (Noop) ReserveSessionBudget(context.Context, string, string, *big.Int, *big.Int) (string, error) {
+	return "res_noop", nil
+}
+
+func (s *Store) CommitBudgetOnChainExecution(ctx context.Context, sessionID, executionDigest string) (string, bool, error) {
 	if executionDigest == "" {
-		return nil
+		return "", false, nil
+	}
+	var reservationID string
+	err := s.pool.QueryRow(ctx, `
+		SELECT reservation_id
+		FROM budget_reservations
+		WHERE lower(session_id) = lower($1)
+		  AND lower(execution_digest) = lower($2)
+		  AND status IN ('BUDGET_RESERVED', 'USEROP_SUBMITTED')
+		LIMIT 1
+	`, sessionID, executionDigest).Scan(&reservationID)
+	if err != nil {
+		return "", false, nil
 	}
 	tag, err := s.pool.Exec(ctx, `
 		UPDATE budget_reservations
-		SET status = 'BUDGET_COMMITTED', finalized_at = $3
-		WHERE reservation_id = (
-			SELECT reservation_id
-			FROM budget_reservations
-			WHERE lower(session_id) = lower($1)
-			  AND lower(execution_digest) = lower($2)
-			  AND status IN ('BUDGET_RESERVED', 'USEROP_SUBMITTED')
-			LIMIT 1
-		)
-	`, sessionID, executionDigest, time.Now().UTC())
+		SET status = 'BUDGET_COMMITTED', finalized_at = $2
+		WHERE reservation_id = $1
+		  AND status IN ('BUDGET_RESERVED', 'USEROP_SUBMITTED')
+	`, reservationID, time.Now().UTC())
 	if err != nil {
-		return err
+		return "", false, err
 	}
-	if tag.RowsAffected() == 0 {
-		return nil
-	}
-	return nil
+	return reservationID, tag.RowsAffected() > 0, nil
 }
 
 func (s *Store) EnsureExecutionDigestSchema(ctx context.Context) error {
@@ -526,8 +565,8 @@ func (Noop) GetReservationIDByIdempotency(context.Context, string) (string, erro
 func (Noop) BindReservationExecutionDigest(context.Context, string, string) error { return nil }
 func (Noop) GetWatcherBlockCursor(context.Context) (uint64, error) { return 0, fmt.Errorf("noop") }
 func (Noop) SetWatcherBlockCursor(context.Context, uint64, string) error { return nil }
-func (Noop) RecordChainExecution(context.Context, ChainExecution) error {
-	return nil
+func (Noop) RecordChainExecution(context.Context, ChainExecution) (string, bool, error) {
+	return "", false, nil
 }
 func (Noop) GetChainExecutionBySessionID(context.Context, string) (ChainExecution, error) {
 	return ChainExecution{}, fmt.Errorf("noop")
@@ -541,6 +580,6 @@ func (Noop) GetSessionReserveSnapshot(context.Context, string) (SessionReserveSn
 func (Noop) MarkStaleUserOpsReconciliationRequired(context.Context, time.Time) (int, error) {
 	return 0, nil
 }
-func (Noop) CommitBudgetOnChainExecution(context.Context, string, string) error {
-	return nil
+func (Noop) CommitBudgetOnChainExecution(context.Context, string, string) (string, bool, error) {
+	return "", false, nil
 }

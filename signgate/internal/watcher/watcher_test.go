@@ -19,10 +19,10 @@ type captureChainExecStore struct {
 	got *store.ChainExecution
 }
 
-func (c *captureChainExecStore) RecordChainExecution(_ context.Context, exec store.ChainExecution) error {
+func (c *captureChainExecStore) RecordChainExecution(_ context.Context, exec store.ChainExecution) (string, bool, error) {
 	copy := exec
 	c.got = &copy
-	return nil
+	return "", false, nil
 }
 
 func TestIngestLogParsesExecutionAllowed(t *testing.T) {

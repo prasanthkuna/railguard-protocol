@@ -1,0 +1,43 @@
+{
+  "$schema": "railguard-video-claims-v1",
+  "releaseStatus": "v0.1 reference implementation; not production-ready for mainnet funds",
+  "canonicalDestination": "docs/PORTFOLIO.md",
+  "claims": [
+    {
+      "id": "post-broadcast-unknown",
+      "claim": "An ambiguous post-broadcast outcome becomes unknown rather than failed.",
+      "proof": [
+        "docs/FAILURE_MODES_FIXED.md",
+        "evidence/apf-003/",
+        "assets/x-campaign/screenshots/terminal-cdp-payment-state.png"
+      ]
+    },
+    {
+      "id": "atomic-budget",
+      "claim": "Payment authorization uses an atomic reserve and commit lifecycle.",
+      "proof": [
+        "docs/FAILURE_MODES_FIXED.md",
+        "docs/PORTFOLIO.md"
+      ]
+    },
+    {
+      "id": "execution-digest",
+      "claim": "Reconciliation identifies the submitted execution by digest instead of FIFO order.",
+      "proof": [
+        "docs/FAILURE_MODES_FIXED.md",
+        "scripts/e2e-happy-path.ps1"
+      ]
+    },
+    {
+      "id": "testnet-evidence",
+      "claim": "The repository contains Base Sepolia, Stellar testnet, APF, and CDP-flow evidence.",
+      "proof": [
+        "evidence/base-sepolia/",
+        "evidence/stellar-testnet/",
+        "evidence/apf-003/",
+        "evidence/apf-004/",
+        "evidence/gate-d-live-flow/"
+      ]
+    }
+  ]
+}

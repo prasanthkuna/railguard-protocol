@@ -7,27 +7,30 @@ import (
 )
 
 type Config struct {
-	AppEnv                 string
-	HTTPPort               string
-	PostgresURL            string
-	RedisAddr              string
-	ChainID                int64
-	RPCURL                 string
-	AdapterAddress         string
-	HookAddress            string
-	EntrypointAddress      string
-	RailguardSignerKey     string
-	ReceiptSignerKey       string
-	SignerKeyID            string
-	OPAPolicyPath          string
-	APIKey                 string
-	AllowNoopStore         bool
-	WatcherEnabled         bool
-	WatcherConfirmation    int64
-	WatcherPollSeconds     int64
-	WatcherStartBlock      int64
-	WatcherRescanBlocks    int64
-	UserOpStaleSeconds     int64
+	AppEnv              string
+	HTTPPort            string
+	PostgresURL         string
+	RedisAddr           string
+	ChainID             int64
+	RPCURL              string
+	AdapterAddress      string
+	HookAddress         string
+	EntrypointAddress   string
+	RailguardSignerKey  string
+	ReceiptSignerKey    string
+	SignerKeyID         string
+	OPAPolicyPath       string
+	APIKey              string
+	AllowNoopStore      bool
+	WatcherEnabled      bool
+	WatcherConfirmation int64
+	WatcherPollSeconds  int64
+	WatcherStartBlock   int64
+	WatcherRescanBlocks int64
+	UserOpStaleSeconds  int64
+	BudgetAuthority     string
+	KMSSignerEnabled    bool
+	KMSSignerKeyID      string
 }
 
 func Load() Config {
@@ -66,11 +69,18 @@ func Load() Config {
 		WatcherStartBlock:   startBlock,
 		WatcherRescanBlocks: rescan,
 		UserOpStaleSeconds:  stale,
+		BudgetAuthority:     getEnv("BUDGET_AUTHORITY", "redis"),
+		KMSSignerEnabled:    getEnv("KMS_SIGNER_ENABLED", "false") == "true",
+		KMSSignerKeyID:      getEnv("KMS_SIGNER_KEY_ID", ""),
 	}
 }
 
 func (c Config) IsLocal() bool {
 	return strings.EqualFold(c.AppEnv, "local")
+}
+
+func (c Config) UsePostgresBudgetAuthority() bool {
+	return strings.EqualFold(c.BudgetAuthority, "postgres")
 }
 
 func getEnv(key, fallback string) string {

@@ -71,7 +71,7 @@ func TestChainExecutionBySessionID(t *testing.T) {
 		TxHash:          "0xabc123",
 		LogIndex:        1,
 	}
-	if err := st.RecordChainExecution(ctx, exec); err != nil {
+	if _, _, err := st.RecordChainExecution(ctx, exec); err != nil {
 		t.Fatal(err)
 	}
 	got, err := st.GetChainExecutionBySessionID(ctx, sessionID)

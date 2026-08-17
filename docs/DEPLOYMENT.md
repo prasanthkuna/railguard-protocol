@@ -1,17 +1,21 @@
 # Deployment & operations
 
-Last updated: 2026-07-18
+Last updated: 2026-08-17
+
+> **Workspace index:** [WORKSPACE.md](./WORKSPACE.md) · **v5 status:** [v5execution.md](./v5execution.md)
 
 ## Live URLs
 
 | Surface | URL |
 |---------|-----|
 | API (staging) | https://staging-railguard-s4ii.encr.app |
-| Web (Vercel) | https://web-ruddy-three-69.vercel.app |
+| Web console | https://prebroadcast.vercel.app |
+
+Browser calls Encore directly or via Vercel proxy depending on env config.
 
 ## Deploy API (Encore)
 
-Migration `008_payment_lifecycle_correlation` applies automatically on Encore deploy.
+Migrations apply automatically on Encore deploy (latest: `011_v5_financial_intents` in coinbase).
 
 ```powershell
 cd coinbase
@@ -22,6 +26,7 @@ Verify after deploy:
 
 ```powershell
 $env:RAILGUARD_BASE_URL = "https://staging-railguard-s4ii.encr.app"
+cd coinbase
 bun run verify:demo
 ```
 
@@ -29,33 +34,13 @@ bun run verify:demo
 
 Vercel auto-deploys from `prasanthkuna/railguard-cdp` on push to `main`.
 
-## Testnet evidence (grant-ready artifacts)
+Production URL: **https://prebroadcast.vercel.app**
 
-```powershell
-powershell -NoProfile -File railguard-new/scripts/testnet-evidence.ps1
-```
+Set `NEXT_PUBLIC_API_URL=https://staging-railguard-s4ii.encr.app` on Vercel.
 
-| Network | Command | Artifact |
-|---------|---------|----------|
-| Stellar testnet | `cd stellar-payment-assurance-kit && npm run testnet-evidence` | `evidence/testnet-live.json` |
-| Base Sepolia | `cd coinbase && bun run testnet-evidence` | `evidence/base-sepolia-live.json` |
-| On-chain APF-006 | `forge test --match-contract PrdDemo` | CI logs |
+## Repo map
 
-## Full product verification
-
-```powershell
-powershell -NoProfile -File railguard-new/scripts/failure-lab.ps1
-```
-
-## Repos (public)
-
-| Repo | GitHub |
-|------|--------|
-| railguard-new | prasanthkuna/railguard-new |
-| railguard-cdp | prasanthkuna/railguard-cdp |
-| x402-guard | prasanthkuna/x402-guard |
-| agent-payment-failure-lab | prasanthkuna/agent-payment-failure-lab |
-| gnu-taler-merchant-reliability-lab | prasanthkuna/gnu-taler-merchant-reliability-lab |
-| stellar-payment-assurance-kit | prasanthkuna/stellar-payment-assurance-kit |
-
-`grant-ops` is **private** — never publish.
+| Legacy name | Folder | GitHub |
+|-------------|--------|--------|
+| railguard-cdp | `coinbase/` | prasanthkuna/railguard-cdp |
+| railguard-protocol | `railguard-new/` | prasanthkuna/railguard-new |
