@@ -43,4 +43,4 @@ Set `NEXT_PUBLIC_API_URL=https://staging-railguard-s4ii.encr.app` on Vercel.
 | Legacy name | Folder | GitHub |
 |-------------|--------|--------|
 | railguard-cdp | `coinbase/` | prasanthkuna/railguard-cdp |
-| railguard-protocol | `railguard-new/` | prasanthkuna/railguard-new |
+| railguard-protocol | `railguard-new/` (local folder) | prasanthkuna/railguard-protocol |

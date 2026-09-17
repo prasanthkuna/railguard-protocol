@@ -1,11 +1,11 @@
 # Railguard Portfolio — Start Here
 
-> **v5 (current):** [v5plan.md](./v5plan.md) · [v5execution.md](./v5execution.md) · [WORKSPACE.md](./WORKSPACE.md)  
-> **Send recruiters this link:** `https://github.com/prasanthkuna/railguard-new/blob/master/docs/PORTFOLIO.md`
+> **Send recruiters this link:** `https://github.com/prasanthkuna/railguard-protocol/blob/master/docs/PORTFOLIO.md`  
+> Maintainer docs: [WORKSPACE.md](./WORKSPACE.md) · [v5plan.md](./v5plan.md) (internal planning — not recruiter-facing)
 
 [![v0.1-reference](https://img.shields.io/badge/release-v0.1--reference-blue)](./RELEASE_v0.1-reference.md)
 [![ci](https://github.com/prasanthkuna/railguard-protocol/actions/workflows/ci.yml/badge.svg)](https://github.com/prasanthkuna/railguard-protocol/actions/workflows/ci.yml)
-[![E2E proof](https://img.shields.io/badge/E2E-docker%20happy--path-green)](../../scripts/e2e-happy-path.ps1)
+[![E2E proof](https://img.shields.io/badge/E2E-evidence%20on%20Base%20Sepolia-blue)](../../evidence/cdp-base-sepolia/)
 [![status](https://img.shields.io/badge/status-v0.1%20reference%20impl-lightgrey)](./RELEASE_v0.1-reference.md)
 
 **One-line pitch:** Policy-enforced payment safety for AI-agent stablecoin payments — adversarial failure lab, pre-sign x402 policy, on-chain enforcement, CDP reconciliation.
@@ -21,16 +21,16 @@
 ```text
 Agent Payment Failure Lab   → tests the system (APF-001..006)
 x402-guard                  → x402 ExecutionRail adapter (OSS)
-railguard-new               → optional on-chain Authority Engine + hook
-coinbase/ (Railguard)       → hosted API, console, CDP execution, v5 kernel
+railguard-protocol          → on-chain Authority Engine + hook (SignGate)
+railguard-cdp (PreBroadcast)→ hosted API, console, CDP execution, reconciliation
 ```
 
 | Layer | Repo | Role |
 |-------|------|------|
 | **Test** | [agent-payment-failure-lab](https://github.com/prasanthkuna/agent-payment-failure-lab) | Adversarial failure profiles |
 | **Policy** | [x402-guard](https://github.com/prasanthkuna/x402-guard) | Pre-sign `authorizePayment` |
-| **On-chain** | [railguard-new](https://github.com/prasanthkuna/railguard-new) | Authority Engine (Go) + ERC-7579 hook |
-| **Control plane** | [railguard-cdp → coinbase](https://github.com/prasanthkuna/railguard-cdp) | Railguard API + CDP + v5 SDK/CLI/MCP |
+| **On-chain** | [railguard-protocol](https://github.com/prasanthkuna/railguard-protocol) | Authority Engine (Go) + ERC-7579 hook |
+| **Control plane** | [railguard-cdp](https://github.com/prasanthkuna/railguard-cdp) | Railguard API + CDP + SDK/CLI/MCP (PreBroadcast UI) |
 
 ---
 
@@ -79,7 +79,7 @@ Intent → Policy → Session → Signature → Hook → Receipt → Reconcile
 | Post-broadcast `failed` | `unknown` + reconciler | [APF-003 evidence](../evidence/apf-003/) |
 | FIFO reconciliation | `executionDigest` | `e2e-happy-path.ps1` |
 
-Full table: [FAILURE_MODES_FIXED.md](./FAILURE_MODES_FIXED.md)
+Full table: [FAILURE_MODES.md](./FAILURE_MODES.md) · [FAILURE_MODES_FIXED.md](./FAILURE_MODES_FIXED.md)
 
 ---
 
@@ -156,4 +156,4 @@ Tag **`v0.1-reference`** on all three repos. Notes: [RELEASE_v0.1-reference.md](
 |------|-----|
 | railguard-protocol | [![ci](https://github.com/prasanthkuna/railguard-protocol/actions/workflows/ci.yml/badge.svg)](https://github.com/prasanthkuna/railguard-protocol/actions/workflows/ci.yml) |
 | x402-guard | [![CI](https://github.com/prasanthkuna/x402-guard/actions/workflows/ci.yml/badge.svg)](https://github.com/prasanthkuna/x402-guard/actions/workflows/ci.yml) |
-| railguard-cdp | PR checks on `main` |
+| railguard-cdp | [![PR Checks](https://github.com/prasanthkuna/railguard-cdp/actions/workflows/pr-checks.yml/badge.svg)](https://github.com/prasanthkuna/railguard-cdp/actions/workflows/pr-checks.yml) |
