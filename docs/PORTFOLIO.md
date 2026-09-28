@@ -21,11 +21,11 @@ Financial Intent → Authorize → Reserve → Execute → Observe → Reconcile
 | Component | Repository | Role |
 |-----------|------------|------|
 | **Railguard Core** | [railguard-protocol](https://github.com/prasanthkuna/railguard-protocol) (this repo) | Architecture, SignGate, contracts, security model |
-| **Railguard Gateway** | [railguard-cdp](https://github.com/prasanthkuna/railguard-cdp) → `railguard-gateway` | Reference runtime API + operator console |
+| **Railguard Gateway** | [railguard-gateway](https://github.com/prasanthkuna/railguard-gateway) | Reference runtime API + operator console |
 | **Failure Lab + Atlas** | [agent-payment-failure-lab](https://github.com/prasanthkuna/agent-payment-failure-lab) | Adversarial tests; **Atlas taxonomy owner** |
 | **x402 adapter** | [x402-guard](https://github.com/prasanthkuna/x402-guard) | Integration only |
 
-Gateway component map: [COMPONENTS.md](https://github.com/prasanthkuna/railguard-cdp/blob/main/docs/COMPONENTS.md).
+Gateway component map: [COMPONENTS.md](https://github.com/prasanthkuna/railguard-gateway/blob/main/docs/COMPONENTS.md).
 
 ## What runs today
 
@@ -50,7 +50,7 @@ Optional ENFORCE: SignGate + on-chain hook (this repo)
 | 1 | `cd agent-payment-failure-lab && npm run lab` |
 | 2 | `cd railguard-gateway && bun run railguard scan --base-url https://staging-railguard-s4ii.encr.app` |
 | 3 | `cd railguard-protocol/contracts && forge test` |
-| 4 | Evidence: [evidence/](../evidence/) · Gateway [arbitrum-sepolia](https://github.com/prasanthkuna/railguard-cdp/tree/main/evidence/arbitrum-sepolia) |
+| 4 | Evidence: [evidence/](../evidence/) · Gateway [arbitrum-sepolia](https://github.com/prasanthkuna/railguard-gateway/tree/main/evidence/arbitrum-sepolia) |
 
 ## Demo loop (incubator / grants)
 
