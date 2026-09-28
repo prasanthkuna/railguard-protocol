@@ -22,7 +22,7 @@ Policy-enforced execution safety layer for AI-agent stablecoin payments.
 |------|------|
 | **[railguard-protocol](https://github.com/prasanthkuna/railguard-protocol)** (this repo) | SignGate, Solidity hook/adapter, SDK, watcher |
 | **[x402-guard](https://github.com/prasanthkuna/x402-guard)** | Pre-sign agent payment policy (caps, replay, rolling budgets) |
-| **[railguard-cdp](https://github.com/prasanthkuna/railguard-cdp)** | Invoice product, CDP execution, approvals, reconciler |
+| **[railguard-gateway](https://github.com/prasanthkuna/railguard-gateway)** | Reference runtime API, operator console, CDP execution, reconciliation, evidence |
 
 **Invariant:** `Intent → Policy → Session → Signature → Hook → Receipt → Reconcile`
 
@@ -205,7 +205,7 @@ Foundry tests cover:
 | [docs/RECEIPT_SCHEMA.md](./docs/RECEIPT_SCHEMA.md) | Receipt schema |
 | [docs/DEPLOY_BASE_SEPOLIA.md](./docs/DEPLOY_BASE_SEPOLIA.md) | Base Sepolia deploy |
 
-**Siblings:** [x402-guard](https://github.com/prasanthkuna/x402-guard) · [railguard-cdp](https://github.com/prasanthkuna/railguard-cdp)
+**Siblings:** [railguard-gateway](https://github.com/prasanthkuna/railguard-gateway) · [agent-payment-failure-lab](https://github.com/prasanthkuna/agent-payment-failure-lab) · [x402-guard](https://github.com/prasanthkuna/x402-guard)
 
 ## Known limitations (v0.1)
 
